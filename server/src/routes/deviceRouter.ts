@@ -1,11 +1,11 @@
 import { Router } from "express";
-import DeviceController from "../controllers/device.controller.js";
+import DeviceController from "../controllers/deviceController.js";
 
 const router = Router();
 
-router.post("/create", DeviceController.create);
-router.get("/getAll", DeviceController.getAll);
-router.get("/getOne:id", DeviceController.getOne);
-router.delete("/remove:id", DeviceController.remove);
+router.post("/", DeviceController.create);
+router.get("/", DeviceController.getAll);
+router.get("/:id", DeviceController.getOne);
+router.delete("/:id", DeviceController.remove);
 
 export default router;

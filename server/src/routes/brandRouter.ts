@@ -3,8 +3,8 @@ import BrandController from "../controllers/brandController.js";
 
 const router = Router();
 
-router.post("/create", BrandController.create);
-router.get("/getAll", BrandController.getAll);
-router.delete("/remove:id", BrandController.remove);
+router.post("/", BrandController.create);
+router.get("/", BrandController.getAll);
+router.delete("/:id", BrandController.remove);
 
 export default router;
