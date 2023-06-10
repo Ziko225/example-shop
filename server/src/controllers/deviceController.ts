@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import models from "../models/models.js";
-import ApiError from "../error/ApiError.js";
+import ApiError from "../exceptions/ApiError.js";
 import { randomUUID } from "crypto";
 import path from "path";
 import { FileArray } from "express-fileupload";

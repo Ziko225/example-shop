@@ -3,6 +3,7 @@ import { sequelize } from "./db.js";
 import staticDirHandler from "./util/staticDirHandler.js";
 import errorHandler from "./middleware/errorHandler.js";
 import fileUpload from "express-fileupload";
+import cookieParser from "cookie-parser";
 import express from 'express';
 import router from "./routes/index.js";
 import cors from "cors";
@@ -18,6 +19,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.static(path.resolve("src", "static")));
 app.use(fileUpload({}));
 app.use("/api", router);

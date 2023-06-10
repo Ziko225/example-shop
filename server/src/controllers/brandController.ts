@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import ApiError from "../error/ApiError.js";
+import ApiError from "../exceptions/ApiError.js";
 import models from "../models/models.js";
 
 const { Brand } = models;
