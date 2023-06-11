@@ -37,15 +37,15 @@ class DeviceController {
             const file: FileArray | null | undefined = req.files;
             const fileName = randomUUID() + ".jpg";
 
+            const device = await Device.create({ name, price, brandId, typeId, img: fileName });
+
             if (!Array.isArray(file?.img) && file?.img) {
                 file.img.mv(path.resolve("src", "static", fileName));
             } else {
                 next(ApiError.badRequest("Image file invalid"));
             }
 
-            const device = await Device.create({ name, price, brandId, typeId, img: fileName });
             return res.json(device);
-
         } catch (error) {
             if (error instanceof Error) {
                 return next(ApiError.internal(error.message));
