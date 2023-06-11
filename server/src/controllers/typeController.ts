@@ -5,6 +5,7 @@ import ApiError from "../exceptions/ApiError.js";
 const { Type } = models;
 
 class TypeController {
+
     async create(req: Request, res: Response, next: NextFunction) {
         try {
             const { name } = req.body;
@@ -27,27 +28,41 @@ class TypeController {
     }
 
     async getAll(req: Request, res: Response, next: NextFunction) {
-        const types = await Type.findAll();
-        if (!types?.length) {
-            return next(ApiError.notFound("Types not found"));
-        }
+        try {
+            const types = await Type.findAll();
+            if (!types?.length) {
+                return next(ApiError.notFound("Types not found"));
+            }
 
-        return res.json(types);
+            return res.json(types);
+
+        } catch (error) {
+            if (error instanceof Error) {
+                return next(ApiError.internal(error.message));
+            }
+        }
     }
 
     async remove(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.params;
-        if (!id) {
-            return next(ApiError.badRequest("Id required"));
-        }
+        try {
+            const { id } = req.params;
+            if (!id) {
+                return next(ApiError.badRequest("Id required"));
+            }
 
-        const type = await Type.findOne({ where: { id } });
-        type && await type.destroy();
-        if (type) {
-            return res.status(200).json(type);
-        }
+            const type = await Type.findOne({ where: { id } });
+            type && await type.destroy();
+            if (type) {
+                return res.status(200).json(type);
+            }
 
-        return next(ApiError.notFound());
+            return next(ApiError.notFound());
+
+        } catch (error) {
+            if (error instanceof Error) {
+                return next(ApiError.internal(error.message));
+            }
+        }
     }
 }
 

@@ -13,6 +13,7 @@ type InfoBlock = {
 };
 
 class DeviceController {
+
     async create(req: Request, res: Response, next: NextFunction) {
         try {
             const { name, price, brandId, typeId, info } = req.body;
@@ -53,43 +54,50 @@ class DeviceController {
     }
 
     async getAll(req: Request, res: Response, next: NextFunction) {
-        const QueryParm = req.query;
-        const { brandId, typeId } = QueryParm;
-        let devices,
-            page = 1,
-            limit = 9;
+        try {
+            const QueryParm = req.query;
+            const { brandId, typeId } = QueryParm;
+            let devices,
+                page = 1,
+                limit = 9;
 
-        if (QueryParm.limit) {
-            limit = +QueryParm.limit;
+            if (QueryParm.limit) {
+                limit = +QueryParm.limit;
+            }
+
+            if (QueryParm.page) {
+                page = +QueryParm.page;
+            }
+
+            const offset = page * limit - limit;
+
+            if (!brandId && !typeId) {
+                devices = await Device.findAndCountAll({ limit, offset });
+            }
+
+            if (brandId && !typeId) {
+                devices = await Device.findAndCountAll({ where: { brandId }, limit, offset });
+            }
+
+            if (!brandId && typeId) {
+                devices = await Device.findAndCountAll({ where: { typeId }, limit, offset });
+            }
+
+            if (brandId && typeId) {
+                devices = await Device.findAndCountAll({ where: { brandId, typeId }, limit, offset });
+            }
+
+            if (!devices) {
+                return next(ApiError.notFound("Devices not found"));
+            }
+
+            return res.json(devices);
+
+        } catch (error) {
+            if (error instanceof Error) {
+                return next(ApiError.internal(error.message));
+            }
         }
-
-        if (QueryParm.page) {
-            page = +QueryParm.page;
-        }
-
-        const offset = page * limit - limit;
-
-        if (!brandId && !typeId) {
-            devices = await Device.findAndCountAll({ limit, offset });
-        }
-
-        if (brandId && !typeId) {
-            devices = await Device.findAndCountAll({ where: { brandId }, limit, offset });
-        }
-
-        if (!brandId && typeId) {
-            devices = await Device.findAndCountAll({ where: { typeId }, limit, offset });
-        }
-
-        if (brandId && typeId) {
-            devices = await Device.findAndCountAll({ where: { brandId, typeId }, limit, offset });
-        }
-
-        if (!devices) {
-            return next(ApiError.notFound("Devices not found"));
-        }
-
-        return res.json(devices);
     }
 
     async getOne(req: Request, res: Response, next: NextFunction) {
@@ -118,22 +126,30 @@ class DeviceController {
     }
 
     async remove(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.params;
+        try {
+            const { id } = req.params;
 
-        if (!id) {
-            return next(ApiError.badRequest("Id required"));
+            if (!id) {
+                return next(ApiError.badRequest("Id required"));
+            }
+
+            const device = await Device.findOne({ where: { id } });
+
+            device && await device.destroy();
+
+            if (device) {
+                return res.status(200).json(device);
+            }
+
+            return next(ApiError.notFound());
+
+        } catch (error) {
+            if (error instanceof Error) {
+                return next(ApiError.internal(error.message));
+            }
         }
-
-        const device = await Device.findOne({ where: { id } });
-
-        device && await device.destroy();
-
-        if (device) {
-            return res.status(200).json(device);
-        }
-
-        return next(ApiError.notFound());
     }
+
 }
 
 export default new DeviceController();

@@ -8,7 +8,6 @@ type User = {
     id: number;
     email: string;
     role: string;
-    ip: string;
     isActivated: boolean;
 };
 
@@ -29,7 +28,7 @@ class TokenService {
     }
 
     async saveToken(userId: number, refreshToken: string, ip: string) {
-        const tokenData: any = await RefreshToken.findOne({ where: { userId } });
+        const tokenData = await RefreshToken.findOne({ where: { userId } });
 
         if (tokenData) {
             tokenData.refreshToken = refreshToken;

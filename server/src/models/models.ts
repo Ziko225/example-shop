@@ -1,31 +1,82 @@
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../db.js";
-import { DataTypes } from "sequelize";
 
-const User = sequelize.define("users", {
+interface IUser extends Model {
+    id: number;
+    email: string;
+    password: string;
+    role: string;
+    isActivated: boolean;
+    activationLink: string;
+}
+
+interface IRefreshToken extends Model {
+    id: number;
+    refreshToken: string;
+    ip: string;
+}
+
+interface IBasket extends Model {
+    id: number;
+}
+
+interface IBasketDevice extends Model {
+    id: number;
+}
+
+interface IDevice extends Model {
+    id: number;
+    name: string;
+    price: number;
+    rating: number;
+    img: string;
+}
+
+interface IType extends Model {
+    id: number;
+    name: string;
+}
+
+interface IBrand extends Model {
+    id: number;
+    name: string;
+}
+interface IRating extends Model {
+    id: number;
+    rate: number;
+}
+interface IDeviceInfo extends Model {
+    id: number;
+    titile: string;
+}
+interface ITypeBrand extends Model {
+    id: number;
+}
+
+const User = sequelize.define<IUser>("users", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     email: { type: DataTypes.STRING, unique: true },
     password: { type: DataTypes.STRING },
     role: { type: DataTypes.STRING, defaultValue: "USER" },
-    registrationIp: { type: DataTypes.STRING, allowNull: false },
     isActivated: { type: DataTypes.BOOLEAN, defaultValue: false },
     activationLink: { type: DataTypes.STRING, defaultValue: "USER" },
 });
 
-const RefreshToken = sequelize.define("refresh_tokens", {
+const RefreshToken = sequelize.define<IRefreshToken>("refresh_tokens", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     refreshToken: { type: DataTypes.STRING, unique: true },
     ip: { type: DataTypes.STRING, allowNull: false },
 });
 
-const Basket = sequelize.define("baskets", {
+const Basket = sequelize.define<IBasket>("baskets", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
-const BasketDevice = sequelize.define("basket_devices", {
+const BasketDevice = sequelize.define<IBasketDevice>("basket_devices", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
-const Device = sequelize.define("devices", {
+const Device = sequelize.define<IDevice>("devices", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING, unique: true, allowNull: false },
     price: { type: DataTypes.INTEGER, allowNull: false },
@@ -33,27 +84,27 @@ const Device = sequelize.define("devices", {
     img: { type: DataTypes.STRING, allowNull: false },
 });
 
-const Type = sequelize.define("types", {
+const Type = sequelize.define<IType>("types", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
-const Brand = sequelize.define("brands", {
+const Brand = sequelize.define<IBrand>("brands", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
-const Rating = sequelize.define("ratings", {
+const Rating = sequelize.define<IRating>("ratings", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    name: { type: DataTypes.STRING, unique: true, allowNull: false },
+    rate: { type: DataTypes.INTEGER, unique: true, allowNull: false },
 });
 
-const DeviceInfo = sequelize.define("device_infos", {
+const DeviceInfo = sequelize.define<IDeviceInfo>("device_infos", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     titile: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
-const TypeBrand = sequelize.define("type_brands", {
+const TypeBrand = sequelize.define<ITypeBrand>("type_brands", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 

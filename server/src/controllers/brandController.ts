@@ -5,6 +5,7 @@ import models from "../models/models.js";
 const { Brand } = models;
 
 class BrandController {
+
     async create(req: Request, res: Response, next: NextFunction) {
         try {
             const { name } = req.body;
@@ -19,6 +20,7 @@ class BrandController {
 
             const brand = await Brand.create({ name });
             return res.json(brand);
+
         } catch (error) {
             if (error instanceof Error) {
                 return next(ApiError.internal(error.message));
@@ -27,27 +29,40 @@ class BrandController {
     }
 
     async getAll(req: Request, res: Response, next: NextFunction) {
-        const brands = await Brand.findAll();
-        if (!brands?.length) {
-            return next(ApiError.notFound("Brands not found"));
-        }
+        try {
+            const brands = await Brand.findAll();
+            if (!brands?.length) {
+                return next(ApiError.notFound("Brands not found"));
+            }
 
-        return res.json(brands);
+            return res.json(brands);
+
+        } catch (error) {
+            if (error instanceof Error) {
+                return next(ApiError.internal(error.message));
+            }
+        }
     }
 
     async remove(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.params;
-        if (!id) {
-            return next(ApiError.badRequest("Id required"));
-        }
+        try {
+            const { id } = req.params;
+            if (!id) {
+                return next(ApiError.badRequest("Id required"));
+            }
 
-        const brand = await Brand.findOne({ where: { id } });
-        brand && await brand.destroy();
+            const brand = await Brand.findOne({ where: { id } });
+            brand && await brand.destroy();
 
-        if (brand) {
-            return res.status(200).json(brand);
+            if (brand) {
+                return res.status(200).json(brand);
+            }
+            return next(ApiError.notFound());
+        } catch (error) {
+            if (error instanceof Error) {
+                return next(ApiError.internal(error.message));
+            }
         }
-        return next(ApiError.notFound());
     }
 }
 

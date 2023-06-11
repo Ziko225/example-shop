@@ -10,6 +10,7 @@ import sendActivationMail from "../services/sendActivationMail.js";
 const { User, Basket } = models;
 
 class UserController {
+
     async registration(req: Request, res: Response, next: NextFunction) {
         try {
             const { email, password, role } = req.body;
@@ -29,7 +30,7 @@ class UserController {
 
             const activationCode = randomUUID();
 
-            const user: any = await User.create({ email, role, password: hashPassword, activationLink: activationCode, registrationIp: ip });
+            const user = await User.create({ email, role, password: hashPassword, activationLink: activationCode, });
 
             await Basket.create({ userId: user.id });
 
