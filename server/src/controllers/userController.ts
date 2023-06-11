@@ -14,9 +14,14 @@ class UserController {
     async registration(req: Request, res: Response, next: NextFunction) {
         try {
             const { email, password, role } = req.body;
+            const jwtKey = process.env.SECRET_KEY;
 
             if (!email || !password) {
                 return next(ApiError.badRequest("Invalid email or password"));
+            }
+
+            if (!jwtKey) {
+                throw new Error("Please, set up SECRET_KEY in .env");
             }
 
             const ip = requestIp.getClientIp(req) || "Not found";
@@ -36,7 +41,7 @@ class UserController {
 
             const emailSendSatus = await sendActivationMail(email, activationCode);
 
-            const tokens = await TokenService.generateToken(user);
+            const tokens = await TokenService.generateToken(user, jwtKey);
 
             if (emailSendSatus?.status) {
                 console.log(emailSendSatus);
@@ -75,6 +80,20 @@ class UserController {
 
     async activate(req: Request, res: Response, next: NextFunction) {
         try {
+            const activationLink = req.params.link;
+
+            const user = await User.findOne({ where: { activationLink } });
+            const clientUrl = process.env.CLIENT_URL || "";
+
+            if (!user) {
+                throw new Error("Invalid activation link");
+            }
+
+            user.isActivated = true;
+            await user.save();
+            console.log("====================== account activated ======================");
+            console.log(user.email);
+            return res.redirect(clientUrl);
 
         } catch (error) {
             if (error instanceof Error) {

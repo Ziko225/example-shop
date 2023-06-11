@@ -1,7 +1,4 @@
 import nodemailer from "nodemailer";
-import { config } from "dotenv";
-
-config();
 
 const sendActivationMail = async (to: string, activationCode: string) => {
     try {
@@ -10,7 +7,7 @@ const sendActivationMail = async (to: string, activationCode: string) => {
             port = process.env.SMTP_PORT,
             user = process.env.SMTP_USER,
             pass = process.env.SMTP_PASSWORD,
-            url = process.env.URL;
+            url = process.env.SERVER_URL;
 
         if (!host || !port || !user || !pass || !url) {
             return ({
@@ -19,7 +16,7 @@ const sendActivationMail = async (to: string, activationCode: string) => {
             });
         }
 
-        const activationLink = `${url}/${activationCode}`;
+        const activationLink = `${url}/api/user/activate/${activationCode}`;
 
         const transporter = nodemailer.createTransport({
             host,
