@@ -7,8 +7,8 @@ const sendActivationMail = async (to: string, activationCode: string) => {
             port = process.env.SMTP_PORT,
             user = process.env.SMTP_USER,
             pass = process.env.SMTP_PASSWORD,
-            url = process.env.SERVER_URL;
-
+            url = process.env.SERVER_URL,
+            secure = process.env.SMTP_SECURE;
         if (!host || !port || !user || !pass || !url) {
             return ({
                 status: false,
@@ -21,6 +21,7 @@ const sendActivationMail = async (to: string, activationCode: string) => {
         const transporter = nodemailer.createTransport({
             host,
             port: +port,
+            secure: secure === "true",
             auth: {
                 user,
                 pass,
@@ -33,7 +34,7 @@ const sendActivationMail = async (to: string, activationCode: string) => {
             subject: 'Account activation',
             html: `
                     <div>
-                        <h1>To activate accaunt please, click to link</h1>
+                        <h1>To activate your account please click here:</h1>
                         <a href=${activationLink}>${activationLink}</a>
                     </div>
                 `

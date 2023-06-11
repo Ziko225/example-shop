@@ -12,6 +12,7 @@ interface IUser extends Model {
 
 interface IRefreshToken extends Model {
     id: number;
+    userId: number;
     refreshToken: string;
     ip: string;
 }

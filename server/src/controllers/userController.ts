@@ -3,7 +3,6 @@ import { validationResult } from "express-validator";
 import { randomUUID } from "crypto";
 import sendActivationMail from "../services/sendActivationMail.js";
 import TokenService from "../services/tokenService.js";
-import requestIp from "request-ip";
 import ApiError from "../exceptions/ApiError.js";
 import models from "../models/models.js";
 import bcrypt from "bcrypt";
@@ -14,21 +13,15 @@ class UserController {
     async registration(req: Request, res: Response, next: NextFunction) {
         try {
             const errors = validationResult(req);
-            if (errors.array()[0].type === "field") {
+            if (!errors.isEmpty()) {
                 const error = errors.array()[0];
                 return next(ApiError.badRequest(`invalid validation: ${error.msg}`));
             }
 
             const { email, password, role } = req.body;
-            const jwtKey = process.env.SECRET_KEY;
+
             const activationCode = randomUUID();
             const hashPassword = await bcrypt.hash(password, 3);
-
-            if (!jwtKey) {
-                throw new Error("Please, set up SECRET_KEY in .env");
-            }
-
-            const ip = requestIp.getClientIp(req) || "Not found";
 
             const target = await User.findOne({ where: { email } });
             if (target) {
@@ -41,10 +34,9 @@ class UserController {
 
             const emailSendSatus = await sendActivationMail(email, activationCode);
 
-            const tokens = await TokenService.generateToken(user, jwtKey);
-
             if (emailSendSatus?.status) {
-                await TokenService.saveToken(user.id, tokens.RefreshToken, ip);
+                const tokens = await TokenService.generateToken(user);
+                await TokenService.saveToken(user.id, tokens.RefreshToken, req);
 
                 res.cookie("refreshToken", tokens.RefreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });
                 return res.json(tokens);
@@ -61,7 +53,33 @@ class UserController {
 
     async login(req: Request, res: Response, next: NextFunction) {
         try {
+            const { email, password } = req.body;
 
+            if (!email || !password) {
+                return next(ApiError.badRequest("Not all fields are filled in"));
+            }
+
+            const user = await User.findOne({ where: { email } });
+            if (!user) {
+                return next(ApiError.badRequest("User not found"));
+            }
+
+            if (!user.isActivated) {
+                return next(ApiError.badRequest("Account not activated"));
+            }
+
+            const isPasswordsEquals = await bcrypt.compare(password, user.password);
+
+            if (!isPasswordsEquals) {
+                return next(ApiError.badRequest("The password is not correct"));
+            }
+
+            const tokens = await TokenService.generateToken(user);
+
+            await TokenService.saveToken(user.id, tokens.RefreshToken, req);
+
+            res.cookie("refreshToken", tokens.RefreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });
+            return res.json(tokens);
         } catch (error) {
             if (error instanceof Error) {
                 return next(ApiError.internal(error.message));
@@ -71,7 +89,10 @@ class UserController {
 
     async logout(req: Request, res: Response, next: NextFunction) {
         try {
-
+            const { refreshToken }: { refreshToken: string; } = req.cookies;
+            const token = TokenService.removeToken(refreshToken);
+            res.clearCookie("refreshToken");
+            return res.json(token);
         } catch (error) {
             if (error instanceof Error) {
                 return next(ApiError.internal(error.message));
@@ -105,7 +126,30 @@ class UserController {
 
     async refresh(req: Request, res: Response, next: NextFunction) {
         try {
+            const { refreshToken }: { refreshToken: string; } = req.cookies;
 
+            if (!refreshToken) {
+                return next(ApiError.Unauthorized());
+            }
+
+            const validateData = TokenService.validateRefreshToken(refreshToken);
+            const rfTokenFromDB = await TokenService.findToken(refreshToken);
+
+            if (!validateData || !rfTokenFromDB) {
+                console.log("valid_________________________________________1");
+                return next(ApiError.Unauthorized());
+            }
+
+            const user = await User.findOne({ where: { id: rfTokenFromDB.userId } });
+            if (!user) {
+                return next(ApiError.Unauthorized());
+            }
+
+            const tokens = await TokenService.generateToken(user);
+            await TokenService.saveToken(user.id, tokens.RefreshToken, req);
+
+            res.cookie("refreshToken", tokens.RefreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });
+            return res.json(tokens);
         } catch (error) {
             if (error instanceof Error) {
                 return next(ApiError.internal(error.message));
