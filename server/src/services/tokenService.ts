@@ -9,13 +9,14 @@ type User = {
     email: string;
     role: string;
     ip: string;
+    isActivated: boolean;
 };
 
 const { RefreshToken } = models;
 
 class TokenService {
-    async generateToken({ id, email, role }: User) {
-        const user = { userId: id, email, role };
+    async generateToken({ id, email, role, isActivated }: User) {
+        const user = { userId: id, email, role, isActivated };
         const jwtKey = process.env.SECRET_KEY;
         if (!jwtKey) {
             throw new Error("Please, set up SECRET_KEY in .env");

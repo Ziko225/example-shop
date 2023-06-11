@@ -3,9 +3,9 @@ import ApiError from "../exceptions/ApiError.js";
 import models from "../models/models.js";
 import bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
-import MailService from "../services/mailService.js";
 import requestIp from "request-ip";
 import TokenService from "../services/tokenService.js";
+import sendActivationMail from "../services/sendActivationMail.js";
 
 const { User, Basket } = models;
 
@@ -26,18 +26,25 @@ class UserController {
             }
 
             const hashPassword = await bcrypt.hash(password, 3);
-            const activationLink = randomUUID();
-            const user: any = await User.create({ email, role, password: hashPassword, activationLink, registrationIp: ip });
+
+            const activationCode = randomUUID();
+
+            const user: any = await User.create({ email, role, password: hashPassword, activationLink: activationCode, registrationIp: ip });
 
             await Basket.create({ userId: user.id });
 
-            await MailService.sendactivationMail(email, activationLink);
+            const emailSendSatus = await sendActivationMail(email, activationCode);
 
             const tokens = await TokenService.generateToken(user);
-            await TokenService.saveToken(user.id, tokens.RefreshToken, ip);
 
-            return res.json(tokens);
-
+            if (emailSendSatus?.status) {
+                console.log(emailSendSatus);
+                await TokenService.saveToken(user.id, tokens.RefreshToken, ip);
+                return res.json(tokens);
+            } else {
+                user.destroy();
+                return next(ApiError.internal(emailSendSatus?.msg));
+            }
         } catch (error) {
             if (error instanceof Error) {
                 return next(ApiError.internal(error.message));
