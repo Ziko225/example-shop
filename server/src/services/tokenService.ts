@@ -15,7 +15,7 @@ class TokenService {
         const user = { userId: id, email, role, isActivated };
 
         const accesToken = jwt.sign(user, jwtKey, { expiresIn: "30m" });
-        const RefreshToken = jwt.sign(user, jwtKey, { expiresIn: "30d" });
+        const RefreshToken = jwt.sign(user, jwtKey, { expiresIn: "60d" });
 
         return { accesToken, RefreshToken };
     }
