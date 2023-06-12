@@ -16,8 +16,10 @@ class TokenService {
 
     async generateToken({ id, email, role, isActivated }: User) {
         const user = { userId: id, email, role, isActivated };
-        const jswAccessKey = process.env.SECRET_KEY || "accessKey_1qw2s@d23Adx$";
-        const jswRefreshKey = process.env.SECRET_KEY || "refreshKey_1qw2s@d23Adx$";
+
+        const jswAccessKey = process.env.JWT_ACCESS_KEY;
+        const jswRefreshKey = process.env.JWT_REFRESH_KEY;
+        if (!jswAccessKey || !jswRefreshKey) throw new Error("Please fill in all JWT fields");
 
         const accesToken = jwt.sign(user, jswAccessKey, { expiresIn: "30m" });
         const RefreshToken = jwt.sign(user, jswRefreshKey, { expiresIn: "60d" });
@@ -39,23 +41,27 @@ class TokenService {
 
     async validateAccessToken(accessToken: string) {
         try {
-            const jswAccessKey = process.env.SECRET_KEY || "accessKey_1qw2s@d23Adx$";
-            return jwt.verify(accessToken, jswAccessKey);
+            const jswAccessKey = process.env.JWT_ACCESS_KEY;
+            if (!jswAccessKey) throw new Error("Please fill in all JWT fields");
+
+            const userData = jwt.verify(accessToken, jswAccessKey);
+
+            return userData;
         } catch (error) {
-            if (error instanceof Error) {
-                throw new Error(error.message);
-            }
+            return null;
         }
     }
 
     async validateRefreshToken(refreshToken: string) {
         try {
-            const jswRefreshKey = process.env.SECRET_KEY || "refreshKey_1qw2s@d23Adx$";
-            return jwt.verify(refreshToken, jswRefreshKey);
+            const jswRefreshKey = process.env.JWT_REFRESH_KEY;
+            if (!jswRefreshKey) throw new Error("Please fill in all JWT fields");
+
+            const userData = await jwt.verify(refreshToken, jswRefreshKey);
+
+            return userData;
         } catch (error) {
-            if (error instanceof Error) {
-                throw new Error(error.message);
-            }
+            return null;
         }
     }
 
@@ -65,6 +71,20 @@ class TokenService {
 
     async findToken(refreshToken: string) {
         return await RefreshToken.findOne({ where: { refreshToken } });
+    }
+
+    async findUserIdFromCookieToken(req: Request) {
+        const jswRefreshKey = process.env.JWT_REFRESH_KEY;
+        if (!jswRefreshKey) throw new Error("Please fill in all JWT fields");
+
+        const { refreshToken }: { refreshToken: string; } = req.cookies;
+        const userData = await jwt.decode(refreshToken);
+
+        if (!userData || typeof (userData) === "string") {
+            return new Error("Unable to find user data from token");
+        }
+
+        return userData?.userId;
     }
 }
 

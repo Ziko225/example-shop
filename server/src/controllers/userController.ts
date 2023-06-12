@@ -133,14 +133,14 @@ class UserController {
             }
 
             const validateData = TokenService.validateRefreshToken(refreshToken);
-            const rfTokenFromDB = await TokenService.findToken(refreshToken);
+            const refreshTokenFromDB = await TokenService.findToken(refreshToken);
 
-            if (!validateData || !rfTokenFromDB) {
+            if (!validateData || !refreshTokenFromDB) {
                 console.log("valid_________________________________________1");
                 return next(ApiError.Unauthorized());
             }
 
-            const user = await User.findOne({ where: { id: rfTokenFromDB.userId } });
+            const user = await User.findOne({ where: { id: refreshTokenFromDB.userId } });
             if (!user) {
                 return next(ApiError.Unauthorized());
             }

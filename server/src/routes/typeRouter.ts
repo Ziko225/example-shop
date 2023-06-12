@@ -1,10 +1,11 @@
 import { Router } from "express";
 import TypeController from "../controllers/typeController.js";
+import authAsAdminMiddleware from "../middleware/authAsAdminMiddleware.js";
 
 const router = Router();
 
-router.post("/", TypeController.create);
+router.post("/", authAsAdminMiddleware, TypeController.create);
 router.get("/", TypeController.getAll);
-router.delete("/:id", TypeController.remove);
+router.delete("/:id", authAsAdminMiddleware, TypeController.remove);
 
 export default router;

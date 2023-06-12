@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 import { sequelize } from "./db.js";
 import staticDirHandler from "./util/staticDirHandler.js";
-import errorHandler from "./middleware/errorHandler.js";
+import errorMiddleware from "./middleware/errorMiddleware.js";
 import fileUpload from "express-fileupload";
 import cookieParser from "cookie-parser";
 import express from 'express';
@@ -24,7 +24,7 @@ app.use(express.static(path.resolve("src", "static")));
 app.use(fileUpload({}));
 app.use("/api", router);
 
-app.use(errorHandler);
+app.use(errorMiddleware);
 
 const startApp = async () => {
     try {
