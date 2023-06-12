@@ -7,7 +7,7 @@ import ApiError from "../exceptions/ApiError.js";
 import models from "../models/models.js";
 import bcrypt from "bcrypt";
 
-const { User, Basket } = models;
+const { User, ShoppingCart } = models;
 class UserController {
 
     async registration(req: Request, res: Response, next: NextFunction) {
@@ -30,7 +30,7 @@ class UserController {
 
             const user = await User.create({ email, role, password: hashPassword, activationLink: activationCode, });
 
-            await Basket.create({ userId: user.id });
+            await ShoppingCart.create({ userId: user.id });
 
             const emailSendSatus = await sendActivationMail(email, activationCode);
 
@@ -147,7 +147,7 @@ class UserController {
             }
 
             const tokens = await TokenService.generateToken(user);
-            
+
             await TokenService.saveToken(user.id, tokens.RefreshToken, req);
 
             res.cookie("refreshToken", tokens.RefreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });

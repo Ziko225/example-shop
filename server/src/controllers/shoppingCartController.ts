@@ -3,7 +3,7 @@ import ApiError from "../exceptions/ApiError.js";
 import models from "../models/models.js";
 import tokenService from "../services/tokenService.js";
 
-const { Basket, BasketDevice, Device } = models;
+const { ShoppingCart, ShoppingCartDevice, Device } = models;
 
 class BrandController {
 
@@ -25,12 +25,12 @@ class BrandController {
                 return next(ApiError.notFound(`Device with id ${id} not found`));
             }
 
-            const basket = await Basket.findOne({ where: { userId } });
-            if (!basket) {
+            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
+            if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }
 
-            const addedDevice = await BasketDevice.create({ deviceId: device.id, basketId: basket.id });
+            const addedDevice = await ShoppingCartDevice.create({ deviceId: device.id, shoppingCartId: shoppingCart.id });
             res.json(addedDevice);
 
         } catch (error) {
@@ -48,18 +48,18 @@ class BrandController {
                 return next(ApiError.Unauthorized());
             }
 
-            const basket = await Basket.findOne({ where: { userId } });
-            if (!basket) {
+            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
+            if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }
 
-            const devicesInBasket = await BasketDevice.findAll({ where: { basketId: basket.id } });
+            const devicesInShoppingCart = await ShoppingCartDevice.findAll({ where: { shoppingCartId: shoppingCart.id } });
 
-            if (!devicesInBasket[0]) {
+            if (!devicesInShoppingCart[0]) {
                 return next(ApiError.notFound(`Devices not found`));
             }
 
-            return res.json(devicesInBasket);
+            return res.json(devicesInShoppingCart);
 
         } catch (error) {
             if (error instanceof Error) {
@@ -80,15 +80,15 @@ class BrandController {
                 return next(ApiError.Unauthorized());
             }
 
-            const basket = await Basket.findOne({ where: { userId } });
-            if (!basket) {
+            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
+            if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }
 
-            const result = await BasketDevice.destroy({ where: { id: id, basketId: basket.id } });
+            const result = await ShoppingCartDevice.destroy({ where: { id: id, shoppingCartId: shoppingCart.id } });
 
             if (!result) {
-                return next(ApiError.badRequest(`Device with id ${id} not found in basket`));
+                return next(ApiError.badRequest(`Device with id ${id} not found in shoppingCart`));
             }
 
             return res.json({ message: `Device with id ${id} removed successfully` });
@@ -107,18 +107,18 @@ class BrandController {
                 return next(ApiError.Unauthorized());
             }
 
-            const basket = await Basket.findOne({ where: { userId } });
-            if (!basket) {
+            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
+            if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }
 
-            const result = await BasketDevice.destroy({ where: { basketId: basket.id } });
+            const result = await ShoppingCartDevice.destroy({ where: { shoppingCartId: shoppingCart.id } });
 
             if (!result) {
-                return next(ApiError.badRequest("Devices in basket not found"));
+                return next(ApiError.badRequest("Devices in shoppingCart not found"));
             }
 
-            return res.json({ message: "Devices successfully removed from basket" });
+            return res.json({ message: "Devices successfully removed from shoppingCart" });
 
         } catch (error) {
             if (error instanceof Error) {

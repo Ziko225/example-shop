@@ -18,13 +18,13 @@ interface IRefreshToken extends Model {
     role: string;
 }
 
-interface IBasket extends Model {
+interface IShoppingCart extends Model {
     id: number;
 }
 
-interface IBasketDevice extends Model {
+interface IShoppingCartDevice extends Model {
     id: number;
-    basketId: number;
+    shoppingCartId: number;
     deviceId: number;
 }
 
@@ -73,11 +73,11 @@ const RefreshToken = sequelize.define<IRefreshToken>("refresh_tokens", {
     ip: { type: DataTypes.STRING, allowNull: false },
 });
 
-const Basket = sequelize.define<IBasket>("baskets", {
+const ShoppingCart = sequelize.define<IShoppingCart>("shoppingCarts", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
-const BasketDevice = sequelize.define<IBasketDevice>("basket_devices", {
+const ShoppingCartDevice = sequelize.define<IShoppingCartDevice>("shoppingCart_devices", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
@@ -116,14 +116,14 @@ const TypeBrand = sequelize.define<ITypeBrand>("type_brands", {
 User.hasOne(RefreshToken);
 RefreshToken.belongsTo(User);
 
-User.hasOne(Basket);
-Basket.belongsTo(User);
+User.hasOne(ShoppingCart);
+ShoppingCart.belongsTo(User);
 
 User.hasMany(Rating);
 Rating.belongsTo(User);
 
-Basket.hasMany(BasketDevice);
-BasketDevice.belongsTo(Basket);
+ShoppingCart.hasMany(ShoppingCartDevice);
+ShoppingCartDevice.belongsTo(ShoppingCart);
 
 Type.hasMany(Device);
 Device.belongsTo(Type);
@@ -134,8 +134,8 @@ Device.belongsTo(Brand);
 Device.hasMany(Rating);
 Rating.belongsTo(Device);
 
-Device.hasMany(BasketDevice);
-BasketDevice.belongsTo(Device);
+Device.hasMany(ShoppingCartDevice);
+ShoppingCartDevice.belongsTo(Device);
 
 Device.hasMany(DeviceInfo, { as: "info" });
 DeviceInfo.belongsTo(Device);
@@ -146,8 +146,8 @@ Brand.belongsToMany(Type, { through: TypeBrand });
 export default {
     User,
     RefreshToken,
-    Basket,
-    BasketDevice,
+    ShoppingCart,
+    ShoppingCartDevice,
     Device,
     Type,
     Brand,
