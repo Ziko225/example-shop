@@ -128,28 +128,23 @@ class DeviceController {
     async remove(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.params;
-
             if (!id) {
                 return next(ApiError.badRequest("Id required"));
             }
 
-            const device = await Device.findOne({ where: { id } });
+            const device = await Device.destroy({ where: { id } });
 
-            device && await device.destroy();
-
-            if (device) {
-                return res.status(200).json(device);
+            if (!device) {
+                return next(ApiError.notFound("Device not found"));
             }
 
-            return next(ApiError.notFound());
-
+            return res.json({ message: "Successfully removed" });
         } catch (error) {
             if (error instanceof Error) {
                 return next(ApiError.internal(error.message));
             }
         }
     }
-
 }
 
 export default new DeviceController();

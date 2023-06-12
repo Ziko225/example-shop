@@ -79,6 +79,7 @@ class UserController {
             await TokenService.saveToken(user.id, tokens.RefreshToken, req);
 
             res.cookie("refreshToken", tokens.RefreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });
+
             return res.json(tokens);
         } catch (error) {
             if (error instanceof Error) {
@@ -91,6 +92,7 @@ class UserController {
         try {
             const { refreshToken }: { refreshToken: string; } = req.cookies;
             const token = TokenService.removeToken(refreshToken);
+
             res.clearCookie("refreshToken");
             return res.json(token);
         } catch (error) {
@@ -113,10 +115,11 @@ class UserController {
 
             user.isActivated = true;
             await user.save();
+
             console.log("====================== account activated ======================");
             console.log(user.email);
-            return res.redirect(clientUrl);
 
+            return res.redirect(clientUrl);
         } catch (error) {
             if (error instanceof Error) {
                 return next(ApiError.internal(error.message));
@@ -132,11 +135,9 @@ class UserController {
                 return next(ApiError.Unauthorized());
             }
 
-            const validateData = TokenService.validateRefreshToken(refreshToken);
+            const validateData = await TokenService.validateRefreshToken(refreshToken);
             const refreshTokenFromDB = await TokenService.findToken(refreshToken);
-
             if (!validateData || !refreshTokenFromDB) {
-                console.log("valid_________________________________________1");
                 return next(ApiError.Unauthorized());
             }
 
@@ -146,6 +147,7 @@ class UserController {
             }
 
             const tokens = await TokenService.generateToken(user);
+            
             await TokenService.saveToken(user.id, tokens.RefreshToken, req);
 
             res.cookie("refreshToken", tokens.RefreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });

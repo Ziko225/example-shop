@@ -50,13 +50,13 @@ class TypeController {
                 return next(ApiError.badRequest("Id required"));
             }
 
-            const type = await Type.findOne({ where: { id } });
-            type && await type.destroy();
-            if (type) {
-                return res.status(200).json(type);
+            const type = await Type.destroy({ where: { id } });
+
+            if (!type) {
+                return next(ApiError.notFound("Type not found"));
             }
 
-            return next(ApiError.notFound());
+            return res.json({ message: "Successfully removed" });
 
         } catch (error) {
             if (error instanceof Error) {

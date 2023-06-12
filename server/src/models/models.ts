@@ -15,6 +15,7 @@ interface IRefreshToken extends Model {
     userId: number;
     refreshToken: string;
     ip: string;
+    role: string;
 }
 
 interface IBasket extends Model {
@@ -23,6 +24,8 @@ interface IBasket extends Model {
 
 interface IBasketDevice extends Model {
     id: number;
+    basketId: number;
+    deviceId: number;
 }
 
 interface IDevice extends Model {
@@ -65,6 +68,7 @@ const User = sequelize.define<IUser>("users", {
 
 const RefreshToken = sequelize.define<IRefreshToken>("refresh_tokens", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    userId: { type: DataTypes.INTEGER, allowNull: false },
     refreshToken: { type: DataTypes.STRING, unique: true },
     ip: { type: DataTypes.STRING, allowNull: false },
 });

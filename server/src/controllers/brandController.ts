@@ -51,13 +51,13 @@ class BrandController {
                 return next(ApiError.badRequest("Id required"));
             }
 
-            const brand = await Brand.findOne({ where: { id } });
-            brand && await brand.destroy();
+            const brand = await Brand.destroy({ where: { id } });
 
-            if (brand) {
-                return res.status(200).json(brand);
+            if (!brand) {
+                return next(ApiError.notFound("Brand not found"));
             }
-            return next(ApiError.notFound());
+
+            return res.json({ message: "Successfully removed" });
         } catch (error) {
             if (error instanceof Error) {
                 return next(ApiError.internal(error.message));
