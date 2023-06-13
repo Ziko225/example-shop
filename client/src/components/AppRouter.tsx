@@ -1,7 +1,5 @@
-import { Navigate, Route, Routes, redirect, useRouteError } from "react-router-dom";
-import { authRoutes, publicRoutes, shopPath } from "../routes";
-import Shop from "../pages/Shop";
-
+import { Navigate, Route, Routes } from "react-router-dom";
+import { authRoutes, publicRoutes } from "../routes";
 
 const AppRouter = () => {
     const isAuth = false;
