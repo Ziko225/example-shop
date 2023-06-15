@@ -1,31 +1,43 @@
-import jwtDecode from "jwt-decode";
 import { useEffect, useState } from "react";
 import { refresh } from "../../http/userApi";
+import { AxiosError } from "axios";
 
 export type UserData = {
     email: string;
     role: string;
     isActivated: boolean;
-} | undefined;
+} | null;
 
-const useAuth = () => {
-    const [accessToken, setAccessToken] = useState(sessionStorage.getItem("token"));
-    const [userData, setUserData] = useState<UserData | undefined>();
+export const useAuth = () => {
+    const [userData, setUserData] = useState<UserData | null>(null);
     const [isAuth, setIsAuth] = useState(false);
+
+    useEffect(() => {
+        if (!isAuth) {
+            setUserData(null);
+        }
+    }, [isAuth]);
 
     useEffect(() => {
         refresh()
             .then(data => {
                 if (!data) {
-                    return setIsAuth(false);
+                    return;
                 }
-                setUserData(jwtDecode(data));
-                setAccessToken(data);
+
+                if (data instanceof AxiosError) {
+                    return;
+                }
+
+                if (!data.isActivated) {
+                    return;
+                }
+
+                setUserData(data);
+                setIsAuth(true);
             })
             .catch(() => setIsAuth(false));
     }, []);
 
-    return { isAuth, userData, accessToken };
+    return { isAuth, userData, setIsAuth, setUserData };
 };
-
-export default useAuth;

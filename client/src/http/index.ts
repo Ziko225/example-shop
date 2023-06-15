@@ -1,14 +1,17 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:3000/api";
+const baseURL = process.env.REACT_APP_HOST_URL;
+const hostUrlIsSameClienUrl = process.env.REACT_APP_HOST_URL_IS_SAME_CLIENT_URL === "true";
 
 export const $host = axios.create({
-    baseURL
+    baseURL,
+    withCredentials: !hostUrlIsSameClienUrl,
 });
 
 export const $authHost = axios.create({
     baseURL,
     headers: {
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-    }
+        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
+    },
+    withCredentials: !hostUrlIsSameClienUrl,
 });

@@ -8,7 +8,8 @@ export const
     adminPath = "/admin",
     shoppingCartPath = "/cart",
     loginPath = "/login",
-    registrationPath = "/registration";
+    registrationPath = "/registration",
+    forgotPasswordPath = "/forgot";
 
 export const authRoutes = [
     {
@@ -32,6 +33,10 @@ export const publicRoutes = [
     },
     {
         path: registrationPath,
+        Component: Auth,
+    },
+    {
+        path: forgotPasswordPath,
         Component: Auth,
     },
 ];
