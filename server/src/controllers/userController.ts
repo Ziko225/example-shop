@@ -65,7 +65,7 @@ class UserController {
             }
 
             if (!user.isActivated) {
-                return next(ApiError.badRequest("Account not activated"));
+                return next(ApiError.badRequest("Account not activated, check your email"));
             }
 
             const isPasswordsEquals = await bcrypt.compare(password, user.password);
