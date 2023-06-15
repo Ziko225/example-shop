@@ -36,9 +36,9 @@ class UserController {
 
             if (emailSendSatus?.status) {
                 const tokens = await TokenService.generateToken(user);
-                await TokenService.saveToken(user.id, tokens.RefreshToken, req);
+                await TokenService.saveToken(user.id, tokens.refreshToken, req);
 
-                res.cookie("refreshToken", tokens.RefreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });
+                res.cookie("refreshToken", tokens.refreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });
                 return res.json(tokens);
             } else {
                 user.destroy();
@@ -76,9 +76,9 @@ class UserController {
 
             const tokens = await TokenService.generateToken(user);
 
-            await TokenService.saveToken(user.id, tokens.RefreshToken, req);
+            await TokenService.saveToken(user.id, tokens.refreshToken, req);
 
-            res.cookie("refreshToken", tokens.RefreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });
+            res.cookie("refreshToken", tokens.refreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });
 
             return res.json(tokens);
         } catch (error) {
@@ -91,7 +91,11 @@ class UserController {
     async logout(req: Request, res: Response, next: NextFunction) {
         try {
             const { refreshToken }: { refreshToken: string; } = req.cookies;
-            const token = TokenService.removeToken(refreshToken);
+            if (!refreshToken) {
+                return res.status(200);
+            }
+
+            const token = await TokenService.removeToken(refreshToken);
 
             res.clearCookie("refreshToken");
             return res.json(token);
@@ -148,9 +152,9 @@ class UserController {
 
             const tokens = await TokenService.generateToken(user);
 
-            await TokenService.saveToken(user.id, tokens.RefreshToken, req);
+            await TokenService.saveToken(user.id, tokens.refreshToken, req);
 
-            res.cookie("refreshToken", tokens.RefreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });
+            res.cookie("refreshToken", tokens.refreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });
             return res.json(tokens);
         } catch (error) {
             if (error instanceof Error) {

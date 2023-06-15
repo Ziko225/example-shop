@@ -21,10 +21,10 @@ class TokenService {
         const jswRefreshKey = process.env.JWT_REFRESH_KEY;
         if (!jswAccessKey || !jswRefreshKey) throw new Error("Please fill in all JWT fields");
 
-        const accesToken = jwt.sign(user, jswAccessKey, { expiresIn: "30m" });
-        const RefreshToken = jwt.sign(user, jswRefreshKey, { expiresIn: "60d" });
+        const accessToken = jwt.sign(user, jswAccessKey, { expiresIn: "30m" });
+        const refreshToken = jwt.sign(user, jswRefreshKey, { expiresIn: "60d" });
 
-        return { accesToken, RefreshToken };
+        return { accessToken, refreshToken };
     }
 
     async saveToken(userId: number, refreshToken: string, req: Request) {

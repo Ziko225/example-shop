@@ -8,6 +8,7 @@ declare module "express" {
         user?: string | JwtPayload;
     }
 }
+
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const authorizationHeader = req.headers.authorization;
@@ -23,6 +24,10 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
         const userData = await tokenService.validateAccessToken(accessToken);
         if (!userData) {
             return next(ApiError.Unauthorized());
+        }
+
+        if (typeof (userData) !== "string" && !userData.isActivated) {
+            return next(ApiError.Unauthorized("Account is not activated"));
         }
 
         req.user = userData;
