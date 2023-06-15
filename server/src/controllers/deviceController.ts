@@ -55,21 +55,16 @@ class DeviceController {
 
     async getAll(req: Request, res: Response, next: NextFunction) {
         try {
-            const QueryParm = req.query;
-            const { brandId, typeId } = QueryParm;
-            let devices,
-                page = 1,
-                limit = 9;
+            const { brandId, typeId, page } = req.query;
 
-            if (QueryParm.limit) {
-                limit = +QueryParm.limit;
+            const limit = 20;
+            let devices;
+
+            if (!page || typeof (page) !== "string") {
+                return next(ApiError.badRequest("Not all are filled in"));
             }
 
-            if (QueryParm.page) {
-                page = +QueryParm.page;
-            }
-
-            const offset = page * limit - limit;
+            const offset = +page * limit - limit;
 
             if (!brandId && !typeId) {
                 devices = await Device.findAndCountAll({ limit, offset });
