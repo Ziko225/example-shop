@@ -1,40 +1,108 @@
+import { AxiosError, AxiosResponse } from "axios";
 import { $authHost, $host } from "./index";
 
 export const createType = async (type: string) => {
-    const { data } = await $authHost.post('api/type', type);
-    return data;
+    try {
+        const { data } = await $authHost.post('type', type);
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            return Error(error.response ? error.response.data.message : error.message);
+        }
+    }
 };
 
+export type TypeTypes = {
+    id: number;
+    name: string;
+}[];
+
 export const fetchTypes = async () => {
-    const { data } = await $host.get('api/type');
-    return data;
+    try {
+        const { data }: AxiosResponse<TypeTypes> = await $host.get('type');
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            return Error(error.response ? error.response.data.message : error.message);
+        }
+    }
 };
 
 export const createBrand = async (brand: string) => {
-    const { data } = await $authHost.post('api/brand', brand);
-    return data;
+    try {
+        const { data } = await $authHost.post('brand', brand);
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            return Error(error.response ? error.response.data.message : error.message);
+        }
+    }
 };
 
+export type BrandTypes = {
+    id: number;
+    name: string;
+}[];
+
 export const fetchBrands = async () => {
-    const { data } = await $host.get('api/brand',);
-    return data;
+    try {
+        const { data }: AxiosResponse<BrandTypes> = await $host.get('brand',);
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            return Error(error.response ? error.response.data.message : error.message);
+        }
+    }
 };
 
 export const createDevice = async (device: string) => {
-    const { data } = await $authHost.post('api/device', device);
-    return data;
+    try {
+        const { data } = await $authHost.post('device', device);
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            return Error(error.response ? error.response.data.message : error.message);
+        }
+    }
 };
 
-export const fetchDevices = async (typeId: number, brandId: number, page: number, limit = 5) => {
-    const { data } = await $host.get('api/device', {
-        params: {
-            typeId, brandId, page, limit
+export type DevicesTypes = {
+    count: number;
+    rows: {
+        brandId: number;
+        id: number;
+        img: string;
+        name: string;
+        price: number;
+        rating: number;
+        typeId: number;
+        createdAt: string;
+        updatedAt: string;
+    }[];
+};
+
+export const fetchDevices = async (page: number, IDs: { typeId?: string, brandId?: string; }) => {
+    try {
+        const { data }: AxiosResponse<DevicesTypes> = await $host.get('device', {
+            params: {
+                typeId: IDs.typeId, brandId: IDs.brandId, page
+            }
+        });
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            return Error(error.response ? error.response.data.message : error.message);
         }
-    });
-    return data;
+    }
 };
 
 export const fetchOneDevice = async (id: number | string) => {
-    const { data } = await $host.get('api/device/' + id);
-    return data;
+    try {
+        const { data } = await $host.get('api/device/' + id);
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            return Error(error.response ? error.response.data.message : error.message);
+        }
+    }
 };

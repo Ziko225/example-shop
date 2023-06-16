@@ -10,6 +10,7 @@ export const StyledNav = styled.nav`
     color: ${theme.colors.textInComponent};
     min-height: 50px;
     gap: 20px;
+    box-shadow: ${theme.shadows.medium};
 `;
 
 export const StyledNavLink = styled(NavLink)`
@@ -22,6 +23,15 @@ export const StyledNavLink = styled(NavLink)`
     }
     ${({ $admin }: { $admin?: boolean; }) => $admin && css`
         border: 1px solid ${theme.colors.textInComponent};
-        padding: 5px;
+        border-radius: 10px;
+        padding: 5px 7px;
     `}
+    &:hover{
+      filter: brightness(150%);
+      text-decoration: underline;
+    }
+    &:active{
+      filter: brightness(50%);
+      text-decoration: none;
+    }
 `;

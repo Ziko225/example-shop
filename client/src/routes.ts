@@ -1,10 +1,12 @@
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
+import ItemInfo from "./pages/ItemInfo";
 import Shop from "./pages/Shop";
 import ShoppingCart from "./pages/ShoppingCart";
 
 export const
     shopPath = "/",
+    itemInfoPath = "/info",
     adminPath = "/admin",
     shoppingCartPath = "/cart",
     loginPath = "/login",
@@ -38,5 +40,9 @@ export const publicRoutes = [
     {
         path: forgotPasswordPath,
         Component: Auth,
+    },
+    {
+        path: itemInfoPath,
+        Component: ItemInfo,
     },
 ];

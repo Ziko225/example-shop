@@ -14,13 +14,15 @@ export const GlobalStyle = createGlobalStyle<{ $whiteColor?: boolean; }>`
   a{
     text-decoration: none;
     color: ${theme.colors.text};
+  }
+
+  button{
+    cursor: pointer;
     &:hover{
-      filter: brightness(150%);
-      text-decoration: underline;
+      filter: brightness(130%);
     }
     &:active{
-      filter: brightness(50%);
-      text-decoration: none;
+      filter: brightness(80%);
     }
   }
 `;
