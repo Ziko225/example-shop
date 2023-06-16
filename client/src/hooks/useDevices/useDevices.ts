@@ -3,7 +3,7 @@ import { BrandTypes, DevicesTypes, TypeTypes, fetchBrands, fetchDevices, fetchTy
 import { useSearchParams } from "react-router-dom";
 
 const useDevices = () => {
-    const [items, setItems] = useState<DevicesTypes | null>(null);
+    const [devices, setItems] = useState<DevicesTypes | null>(null);
     const [brands, setBrands] = useState<BrandTypes | null>(null);
     const [types, setTypes] = useState<TypeTypes | null>(null);
 
@@ -29,7 +29,7 @@ const useDevices = () => {
     }, [searchParams]);
 
     useEffect(() => {
-        if (!items) {
+        if (!devices) {
             return;
         }
 
@@ -48,9 +48,9 @@ const useDevices = () => {
             }
             setTypes(e);
         });
-    }, [items]);
+    }, [devices]);
 
-    return { items, brands, types, errorMsg };
+    return { devices, brands, types, errorMsg };
 };
 
 export default useDevices;

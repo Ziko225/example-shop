@@ -3,7 +3,7 @@ import { Containter } from "./styled";
 const ItemInfo = () => {
   return (
     <Containter>
-      <h1>Item Info</h1>
+      <h1>Device Info</h1>
     </Containter>
   );
 };

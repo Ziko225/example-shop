@@ -6,7 +6,7 @@ import { FilterBlockBrands, FilterBlockTypes, ItemsBlock, StyledButton, StyledMa
 import useSetParams from "./useSetParams";
 
 const Shop = () => {
-  const { brands, items, types, errorMsg } = useDevices();
+  const { brands, devices, types, errorMsg } = useDevices();
 
   const [searchParams] = useSearchParams();
 
@@ -46,9 +46,9 @@ const Shop = () => {
       </FilterBlockTypes>
       <ItemsBlock>
 
-        {items
-          ? items.rows.map((item) =>
-            <ItemCard key={item.id} data={item} />
+        {devices
+          ? devices.rows.map((device) =>
+            <ItemCard key={device.id} data={device} />
           )
           : <h2>{errorMsg}</h2>
         }
