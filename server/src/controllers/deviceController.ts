@@ -10,7 +10,7 @@ const { Device, DeviceInfo } = models;
 type InfoBlock = {
     title: string;
     description: string;
-};
+}[];
 
 class DeviceController {
 
@@ -28,7 +28,9 @@ class DeviceController {
             }
 
             if (info) {
-                JSON.parse(info).forEact(({ title, description }: InfoBlock) => DeviceInfo.create({
+                const value: InfoBlock = JSON.parse(info);
+
+                value && value.forEach(({ title, description }) => DeviceInfo.create({
                     title,
                     description,
                 }));
@@ -86,8 +88,7 @@ class DeviceController {
                 return next(ApiError.notFound("Devices not found"));
             }
 
-            return res.json(devices);
-
+            return res.json({ rows: devices.rows, count: devices.count, limit });
         } catch (error) {
             if (error instanceof Error) {
                 return next(ApiError.internal(error.message));
