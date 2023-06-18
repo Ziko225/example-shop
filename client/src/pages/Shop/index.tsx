@@ -4,6 +4,7 @@ import useSelectId from "../../hooks/useSelectId/useSelectId";
 import ItemCard from "./ItemCard";
 import { FilterBlockBrands, FilterBlockTypes, ItemsBlock, Pagination, PaginationButton, StyledButton, StyledMain } from "./styled";
 import useSetParams from "./useSetParams";
+import { useEffect, useState } from "react";
 
 const Shop = () => {
   const [searchParams] = useSearchParams();
@@ -15,7 +16,12 @@ const Shop = () => {
 
   const [selectedBrandId, setSelectedBrandId] = useSelectId(+IDs.brandId);
   const [selectedTypeId, setSelectedTypeId] = useSelectId(+IDs.typeId);
-  const [selectedPage, setSelectedPage] = useSelectId(1);
+
+  useEffect(() => {
+    setSelectedPage(1);
+  }, [searchParams]);
+
+  const [selectedPage, setSelectedPage] = useState(1);
 
   const { brands, devices, types, errorMsg, pages } = useDevices(selectedPage);
 
