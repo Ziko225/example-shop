@@ -11,5 +11,8 @@ export const theme = {
     shadows: {
         light: "1px 1px 5px #3334",
         medium: "2px 2px 7px #3338",
-    }
+    },
+    breakpoints: {
+        mobileMax: "780px",
+    },
 };

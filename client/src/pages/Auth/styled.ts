@@ -3,17 +3,16 @@ import styled, { css } from "styled-components";
 import { theme } from "../../theme";
 
 export const StyledMain = styled.main`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    width: 100%;
 `;
 
 export const StyledForm = styled.form`
     display: flex;
     flex-direction: column;
-    width: 300px;
+    max-width: 370px;
+    padding: 0 15px;
+    margin: auto;
     margin-top: 20vh;
-    padding: 40px 50px;
     gap: 15px;
 `;
 

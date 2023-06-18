@@ -2,12 +2,10 @@ import { useSearchParams } from "react-router-dom";
 import useDevices from "../../hooks/useDevices/useDevices";
 import useSelectId from "../../hooks/useSelectId/useSelectId";
 import ItemCard from "./ItemCard";
-import { FilterBlockBrands, FilterBlockTypes, ItemsBlock, StyledButton, StyledMain } from "./styled";
+import { FilterBlockBrands, FilterBlockTypes, ItemsBlock, Pagination, PaginationButton, StyledButton, StyledMain } from "./styled";
 import useSetParams from "./useSetParams";
 
 const Shop = () => {
-  const { brands, devices, types, errorMsg } = useDevices();
-
   const [searchParams] = useSearchParams();
 
   const IDs = {
@@ -15,10 +13,13 @@ const Shop = () => {
     brandId: searchParams.get("brandId") || 0
   };
 
-  const [brandId, setBrandId] = useSelectId(+IDs.brandId);
-  const [typeId, setTypeId] = useSelectId(+IDs.typeId);
+  const [selectedBrandId, setSelectedBrandId] = useSelectId(+IDs.brandId);
+  const [selectedTypeId, setSelectedTypeId] = useSelectId(+IDs.typeId);
+  const [selectedPage, setSelectedPage] = useSelectId(1);
 
-  useSetParams(brandId, typeId);
+  const { brands, devices, types, errorMsg, pages } = useDevices(selectedPage);
+
+  useSetParams(selectedBrandId, selectedTypeId);
 
   return (
     <StyledMain>
@@ -26,8 +27,8 @@ const Shop = () => {
         {brands && brands.map((brand) =>
           <StyledButton
             key={brand.id}
-            $active={brandId === brand.id}
-            onClick={() => setBrandId(brand.id)}
+            $active={selectedBrandId === brand.id}
+            onClick={() => setSelectedBrandId(brand.id)}
           >
             {brand.name}
           </StyledButton>
@@ -37,15 +38,14 @@ const Shop = () => {
         {types && types.map((type) =>
           <StyledButton
             key={type.id}
-            $active={typeId === type.id}
-            onClick={() => setTypeId(type.id)}
+            $active={selectedTypeId === type.id}
+            onClick={() => setSelectedTypeId(type.id)}
           >
             {type.name}
           </StyledButton>
         )}
       </FilterBlockTypes>
       <ItemsBlock>
-
         {devices
           ? devices.rows.map((device) =>
             <ItemCard key={device.id} data={device} />
@@ -53,6 +53,12 @@ const Shop = () => {
           : <h2>{errorMsg}</h2>
         }
       </ItemsBlock>
+      <Pagination>
+        {!pages || pages[1] && pages?.map((page) =>
+          <PaginationButton onClick={() => setSelectedPage(page)} $active={page === selectedPage} key={page}>
+            {page}
+          </PaginationButton>)}
+      </Pagination>
     </StyledMain>
   );
 };

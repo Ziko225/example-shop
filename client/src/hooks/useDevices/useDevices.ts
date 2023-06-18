@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { BrandTypes, DevicesTypes, TypeTypes, fetchBrands, fetchDevices, fetchTypes } from "../../http/shopApi";
 import { useSearchParams } from "react-router-dom";
 
-const useDevices = () => {
+const useDevices = (selectedPage: number) => {
     const [devices, setItems] = useState<DevicesTypes | null>(null);
     const [brands, setBrands] = useState<BrandTypes | null>(null);
     const [types, setTypes] = useState<TypeTypes | null>(null);
@@ -17,16 +17,15 @@ const useDevices = () => {
             brandId: searchParams.get("brandId") || undefined
         };
 
-        fetchDevices(1, IDs).then((e) => {
+        fetchDevices(selectedPage, IDs).then((e) => {
             if (!e || e instanceof Error) {
-                console.log(e);
                 setErrorMsg(e?.message || "");
                 return;
             }
             setItems(e);
         }).catch((e) => console.log(e));
 
-    }, [searchParams]);
+    }, [searchParams, selectedPage]);
 
     useEffect(() => {
         if (!devices) {
@@ -50,7 +49,22 @@ const useDevices = () => {
         });
     }, [devices]);
 
-    return { devices, brands, types, errorMsg };
+    const getPaginations = () => {
+        if (!devices?.rows) {
+            return;
+        }
+        const pages: Array<number> = [];
+
+        const pageCount = Math.ceil(+devices.count / 20);
+
+        for (let i = 0; i < pageCount; i++) {
+            pages.push(i + 1);
+        }
+
+        return pages;
+    };
+
+    return { devices, brands, types, errorMsg, pages: getPaginations() };
 };
 
 export default useDevices;
