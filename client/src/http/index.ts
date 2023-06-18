@@ -7,11 +7,3 @@ export const $host = axios.create({
     baseURL,
     withCredentials: !hostUrlIsSameClienUrl,
 });
-
-export const $authHost = axios.create({
-    baseURL,
-    headers: {
-        "Authorization": `Bearer ${sessionStorage.getItem('token')}`
-    },
-    withCredentials: !hostUrlIsSameClienUrl,
-});

@@ -2,9 +2,10 @@ import { useSearchParams } from "react-router-dom";
 import useDevices from "../../hooks/useDevices/useDevices";
 import useSelectId from "../../hooks/useSelectId/useSelectId";
 import ItemCard from "./ItemCard";
-import { FilterBlockBrands, FilterBlockTypes, ItemsBlock, Pagination, PaginationButton, StyledButton, StyledMain } from "./styled";
+import { FilterBlockBrands, FilterBlockTypes, ItemsBlock, StyledButton, StyledMain } from "./styled";
 import useSetParams from "./useSetParams";
 import { useEffect, useState } from "react";
+import Pagination from "../../components/Pagination";
 
 const Shop = () => {
   const [searchParams] = useSearchParams();
@@ -23,7 +24,7 @@ const Shop = () => {
 
   const [selectedPage, setSelectedPage] = useState(1);
 
-  const { brands, devices, types, errorMsg, pages } = useDevices(selectedPage);
+  const { brands, devices, types, status, pages } = useDevices(selectedPage);
 
   useSetParams(selectedBrandId, selectedTypeId);
 
@@ -53,18 +54,13 @@ const Shop = () => {
       </FilterBlockTypes>
       <ItemsBlock>
         {devices
-          ? devices.rows.map((device) =>
+          ? devices?.rows.map((device) =>
             <ItemCard key={device.id} data={device} />
           )
-          : <h2>{errorMsg}</h2>
+          : <h2>{status}</h2>
         }
       </ItemsBlock>
-      <Pagination>
-        {!pages || pages[1] && pages?.map((page) =>
-          <PaginationButton onClick={() => setSelectedPage(page)} $active={page === selectedPage} key={page}>
-            {page}
-          </PaginationButton>)}
-      </Pagination>
+      <Pagination pages={pages} selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
     </StyledMain>
   );
 };

@@ -29,11 +29,11 @@ export const useAuth = () => {
                     return;
                 }
 
-                if (!data.isActivated) {
+                if (!data.userData?.isActivated) {
                     return;
                 }
 
-                setUserData(data);
+                setUserData(data.userData);
                 setIsAuth(true);
             })
             .catch(() => setIsAuth(false));

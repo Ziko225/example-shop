@@ -22,6 +22,10 @@ export const GlobalStyle = createGlobalStyle<{ $whiteColor?: boolean; }>`
       color: ${theme.colors.text};
     }
 
+    ul{
+      padding: 0;
+    }
+
     button{
       cursor: pointer;
       &:hover{

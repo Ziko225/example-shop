@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { $authHost, $host } from ".";
+import { $host } from ".";
 import jwtDecode from "jwt-decode";
 import { UserData } from "../hooks/useAuth";
 
@@ -52,7 +52,7 @@ export const login = async (email: string, password: string) => {
 
 export const logout = async () => {
     try {
-        return await $authHost.post("user/logout");
+        return await $host.post("user/logout");
     } catch (error) {
         if (error instanceof AxiosError) {
             return error;
@@ -62,7 +62,7 @@ export const logout = async () => {
 
 export const refresh = async () => {
     try {
-        const { data }: AuthProps = await $authHost.get('user/refresh');
+        const { data }: AuthProps = await $host.get('user/refresh');
 
         if (!data) {
             return new AxiosError("Something get wrong");
@@ -72,7 +72,7 @@ export const refresh = async () => {
 
         const userData = await jwtDecode<UserData>(data.accessToken);
 
-        return userData;
+        return { userData, token: data.accessToken };
     } catch (error) {
         return;
     }
