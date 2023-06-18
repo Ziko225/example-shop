@@ -152,10 +152,12 @@ class UserController {
 
             const tokens = await TokenService.generateToken(user);
 
-            await TokenService.saveToken(user.id, tokens.refreshToken, req);
-
             res.cookie("refreshToken", tokens.refreshToken, { maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true });
-            return res.json(tokens);
+
+            const save = await TokenService.saveToken(user.id, tokens.refreshToken, req);
+
+            if (save) { res.json(tokens); }
+
         } catch (error) {
             if (error instanceof Error) {
                 return next(ApiError.internal(error.message));
