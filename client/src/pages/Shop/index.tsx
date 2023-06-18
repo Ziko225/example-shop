@@ -54,7 +54,7 @@ const Shop = () => {
       </FilterBlockTypes>
       <ItemsBlock>
         {devices
-          ? devices?.rows.map((device) =>
+          ? devices.rows.map((device) =>
             <ItemCard key={device.id} data={device} />
           )
           : <h2>{status}</h2>

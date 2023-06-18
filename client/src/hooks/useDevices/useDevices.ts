@@ -16,22 +16,22 @@ type DevicesTypes = {
         createdAt: string;
         updatedAt: string;
     }[];
-} | undefined;
+} | null | undefined;
 
 type BrandTypes = {
     id: number;
     name: string;
-}[];
+}[] | null;
 
 type TypeTypes = {
     id: number;
     name: string;
-}[];
+}[] | null;
 
 const useDevices = (selectedPage: number) => {
-    const [devices, setItems] = useState<DevicesTypes | null>(null);
-    const [brands, setBrands] = useState<BrandTypes | null>(null);
-    const [types, setTypes] = useState<TypeTypes | null>(null);
+    const [devices, setItems] = useState<DevicesTypes>(null);
+    const [brands, setBrands] = useState<BrandTypes>(null);
+    const [types, setTypes] = useState<TypeTypes>(null);
 
     const [status, setStatus] = useState("Loading..");
 
@@ -55,6 +55,7 @@ const useDevices = (selectedPage: number) => {
         const status = await fetchTypes();
         if (!status || status instanceof Error) {
             setStatus(status?.message || "");
+            setTypes([]);
             return;
         }
         setTypes(status);
@@ -64,6 +65,7 @@ const useDevices = (selectedPage: number) => {
         const status = await fetchBrands();
         if (!status || status instanceof Error) {
             setStatus(status?.message || "");
+            setBrands([]);
             return;
         }
         setBrands(status);
