@@ -1,7 +1,7 @@
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import { loginPath, shopPath } from "../../routes";
-import { useContext, useState } from "react";
 import { login, registration } from "../../http/userApi";
 
 const useSubmit = (email: string, password: string, repeatPassword: string, isLoginPage: boolean) => {
@@ -10,17 +10,21 @@ const useSubmit = (email: string, password: string, repeatPassword: string, isLo
     const navigate = useNavigate();
 
     const [alert, setAlert] = useState("");
-    const [success, setSuccess] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [status, setStatus] = useState("");
 
-    if (auth?.isAuth) {
-        navigate(shopPath);
-    }
+    const isSuccess = status === "ok";
+    const isLoading = status === "loading";
+
+    useEffect(() => {
+        if (auth?.isAuth) {
+            navigate(shopPath);
+        }
+    }, [auth]);
 
     const submit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setAlert("");
-        setSuccess(false);
+        setStatus("");
 
         if (password.length < 6) {
             setAlert("Password is too short, min length is 6");
@@ -32,29 +36,23 @@ const useSubmit = (email: string, password: string, repeatPassword: string, isLo
             return;
         }
 
-        setIsLoading(true);
+        setStatus("loading");
 
         const status = isLoginPage
             ? await login(email, password)
             : await registration(email, password);
 
-        if (status instanceof Error) {
-            setIsLoading(false);
-            setAlert(status.message);
+        if (!status || status instanceof Error) {
+            setStatus("error");
+            setAlert(status?.message || "Something get wrong!");
             return;
         }
 
-        if (!status) {
-            setAlert("Something get wrong!");
-            setIsLoading(false);
-            return;
-        }
-
-        setIsLoading(false);
+        setStatus("loading");
 
         if (!isLoginPage) {
             setAlert("An email has been sent to your email address containing an activation link");
-            setSuccess(true);
+            setStatus("ok");
             navigate(loginPath);
             return;
         }
@@ -63,10 +61,10 @@ const useSubmit = (email: string, password: string, repeatPassword: string, isLo
         auth?.setUserData(status);
 
         navigate(shopPath);
-        setSuccess(true);
+        setStatus("ok");
     };
 
-    return { submit, alert, isLoading, success };
+    return { submit, alert, isLoading, isSuccess };
 };
 
 export default useSubmit;

@@ -13,7 +13,7 @@ const Auth = () => {
   const isLoginPage = useLocation().pathname === "/login";
   const isForgotPassPage = useLocation().pathname === "/forgot";
 
-  const { alert, isLoading, submit, success } = useSubmit(email, password, repeatPassword, isLoginPage);
+  const { alert, isLoading, submit, isSuccess } = useSubmit(email, password, repeatPassword, isLoginPage);
 
   if (isForgotPassPage) {
     return (
@@ -29,7 +29,7 @@ const Auth = () => {
       <StyledForm onSubmit={submit}>
         {isLoading
           ? <Alerts $loading>Loading...</Alerts>
-          : <Alerts $isSuccess={success}>{alert}</Alerts>}
+          : <Alerts $isSuccess={isSuccess}>{alert}</Alerts>}
         <StyledInput value={email} onChange={(e) => setEmail(e.currentTarget.value)} placeholder="Email" type="email" />
         <StyledInput value={password} onChange={(e) => setPassword(e.currentTarget.value)} placeholder="Password" type="password" />
         {!isLoginPage &&
