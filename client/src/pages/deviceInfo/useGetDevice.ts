@@ -20,21 +20,18 @@ type Device = {
 
 const useGetDevice = () => {
     const [device, setDevice] = useState<Device>();
-    const [statusMsg, setStatusMsg] = useState("Loading...");
 
     const [searchParams] = useSearchParams();
     const typeId = searchParams.get("id") || undefined;
 
     const getDeviceData = async () => {
         if (!typeId) {
-            setStatusMsg("Id not found");
             return;
         }
 
         const data = await fetchOneDevice(typeId);
 
         if (!data || data instanceof Error) {
-            setStatusMsg(data?.message || "Something get wrong");
             return;
         }
 
@@ -45,7 +42,7 @@ const useGetDevice = () => {
         getDeviceData();
     }, []);
 
-    return { device, getDeviceData, statusMsg };
+    return { device, getDeviceData };
 };
 
 export default useGetDevice;

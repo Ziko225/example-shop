@@ -4,7 +4,7 @@ import useGetDevice from "./useGetDevice";
 import { notFoundPath } from "../../routes";
 
 const ItemInfo = () => {
-  const { device, statusMsg } = useGetDevice();
+  const { device } = useGetDevice();
 
   const navigate = useNavigate();
 
@@ -22,20 +22,18 @@ const ItemInfo = () => {
         <StyledImg alt="Deviuce" src={imgUrl} />
         <ContentBlock>
           <h1>{device.name}</h1>
-          <Starblock><StyledStar /> {device.rating}</Starblock>
+          <Starblock><StyledStar /> {device.rating} / 5</Starblock>
           <Price>{device.price}$</Price>
           <StyledButon cart>Add to cart</StyledButon>
         </ContentBlock>
-        {device.info ?
-          <ContentBlock description>
-            {device.info.map(({ title, description }) =>
-              <>
-                <DescriptionTitile>{title}:</DescriptionTitile>
-                {description}
-              </>
-            )}
-          </ContentBlock>
-          : <h2>{statusMsg}</h2>}
+        <ContentBlock description>
+          {device.info.map(({ title, description }) =>
+            <>
+              <DescriptionTitile>{title}:</DescriptionTitile>
+              {description}
+            </>
+          )}
+        </ContentBlock>
       </Card>
     </Container>
   );
