@@ -9,7 +9,7 @@ export const StyledLink = styled(Link)`
         transform: translateY(-13px);
         color: ${theme.colors.componentBackground};
     }
-    max-width: 400px;
+    max-width: 700px;
 `;
 
 export const Card = styled.article`
@@ -19,7 +19,6 @@ export const Card = styled.article`
     box-shadow: ${theme.shadows.light};
     padding: 10px;
     height: 100%;
-    
 `;
 
 export const Img = styled.img`

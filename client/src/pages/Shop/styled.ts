@@ -39,11 +39,13 @@ export const ItemsBlock = styled.ul`
     padding: 0;
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, auto));
+    justify-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
     gap: 20px;
     @media (max-width: ${theme.breakpoints.mobileMax}) {
         flex-wrap: wrap;
         flex-direction: row;
+        justify-content: center;
     }
 `;
 

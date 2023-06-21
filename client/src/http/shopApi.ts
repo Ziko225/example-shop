@@ -145,7 +145,7 @@ export const fetchDevices = async (page: number, IDs: { typeId?: string, brandId
 };
 
 export const fetchOneDevice = async (id: number | string) => {
-    return await getRequest('api/device/' + id);
+    return await getRequest('device/' + id);
 };
 
 export const removeDevice = async (deviceId: number) => {
