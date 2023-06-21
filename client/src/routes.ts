@@ -1,11 +1,13 @@
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
-import ItemInfo from "./pages/ItemInfo";
+import ItemInfo from "./pages/deviceInfo";
+import ErrorPage from "./pages/ErrorPage";
 import Shop from "./pages/Shop";
 import ShoppingCart from "./pages/ShoppingCart";
 
 export const
     shopPath = "/",
+    notFoundPath = "/404",
     itemInfoPath = "/info",
     adminPath = "/admin",
     shoppingCartPath = "/cart",
@@ -44,5 +46,9 @@ export const publicRoutes = [
     {
         path: itemInfoPath,
         Component: ItemInfo,
+    },
+    {
+        path: notFoundPath,
+        Component: ErrorPage,
     },
 ];
