@@ -27,19 +27,26 @@ class DeviceController {
                 return next(ApiError.badRequest("Not all fields are filled in"));
             }
 
-            if (info) {
-                const value: InfoBlock = JSON.parse(info);
-
-                value && value.forEach(({ title, description }) => DeviceInfo.create({
-                    title,
-                    description,
-                }));
-            }
-
             const file: FileArray | null | undefined = req.files;
             const fileName = randomUUID() + ".jpg";
 
             const device = await Device.create({ name, price, brandId, typeId, img: fileName });
+
+            if (info) {
+                const parsedInfo: InfoBlock = JSON.parse(info);
+
+                parsedInfo && parsedInfo.forEach(({ title, description }) => {
+                    if (parsedInfo.filter((e) => e.title === title).length > 1) {
+                        return;
+                    } else {
+                        DeviceInfo.create({
+                            title,
+                            description,
+                            deviceId: device.id
+                        });
+                    }
+                });
+            }
 
             if (!Array.isArray(file?.img) && file?.img) {
                 file.img.mv(path.resolve("src", "static", fileName));

@@ -51,7 +51,9 @@ interface IRating extends Model {
 }
 interface IDeviceInfo extends Model {
     id: number;
-    titile: string;
+    title: string;
+    description: string,
+    deviceId: number;
 }
 interface ITypeBrand extends Model {
     id: number;
@@ -106,7 +108,8 @@ const Rating = sequelize.define<IRating>("ratings", {
 
 const DeviceInfo = sequelize.define<IDeviceInfo>("device_infos", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    titile: { type: DataTypes.STRING, unique: true, allowNull: false },
+    title: { type: DataTypes.STRING, unique: true, allowNull: false },
+    description: { type: DataTypes.STRING, allowNull: false },
 });
 
 const TypeBrand = sequelize.define<ITypeBrand>("type_brands", {
