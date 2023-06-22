@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchBrands, fetchDevices, fetchTypes } from "../../http/shopApi";
+import { fetchBrands, fetchDevices, fetchTypes } from "../http/shopApi";
 import { useSearchParams } from "react-router-dom";
 
 type DevicesTypes = {

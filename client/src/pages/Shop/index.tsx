@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
-import useDevices from "../../hooks/useDevices/useDevices";
-import useSelectId from "../../hooks/useSelectId/useSelectId";
+import useDevices from "../../hooks/useDevices";
+import useSelectId from "../../hooks/useSelectId";
 import ItemCard from "./deviceCart";
 import { FilterBlockBrands, FilterBlockTypes, ItemsBlock, StyledButton, StyledMain } from "./styled";
 import useSetParams from "./useSetParams";

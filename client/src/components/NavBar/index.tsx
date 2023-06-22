@@ -1,12 +1,14 @@
 import { useContext } from "react";
 import { adminPath, loginPath, shopPath, shoppingCartPath } from "../../routes";
-import { StyledNav, StyledNavLink } from "./styled";
-import { AuthContext } from "../../context/authContext";
+import { CartCount, StyledNav, StyledNavLink } from "./styled";
+import { AuthContext } from "../../context/AuthContext";
 import { ReactComponent as CartLogo } from "./logo.svg";
 import { logout } from "../../http/userApi";
+import { ShoppingCartContext } from "../../context/ShoppingCartContext";
 
 const NavBar = () => {
     const auth = useContext(AuthContext);
+    const cart = useContext(ShoppingCartContext);
 
     const click = () => {
         logout();
@@ -19,8 +21,13 @@ const NavBar = () => {
             {auth?.userData?.role === "ADMIN" && <StyledNavLink $admin to={adminPath}>Admin panel</StyledNavLink>}
             {auth?.isAuth
                 ? <>
-                    <StyledNavLink to={shoppingCartPath}><CartLogo /></StyledNavLink>
-                    <StyledNavLink to={shopPath} onClick={click}>Log out</StyledNavLink>
+                    <StyledNavLink to={shoppingCartPath}>
+                        <CartLogo />
+                        {cart?.cartData[0] && <CartCount>{cart?.cartData.length}</CartCount>}
+                    </StyledNavLink>
+                    <StyledNavLink to={shopPath} onClick={click}>
+                        Log out
+                    </StyledNavLink>
                 </>
                 : <StyledNavLink to={loginPath}>Log in</StyledNavLink>}
         </StyledNav>

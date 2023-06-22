@@ -55,6 +55,9 @@ export const ContentBlock = styled.div`
     ${({ description }: { description?: boolean; }) => description && css`
         grid-column-start: span 2;
     `}
+    @media (max-width: ${theme.breakpoints.mobileMax}) {
+        min-width: 110px;
+    }
 `;
 
 export const DescriptionTitile = styled.h3`

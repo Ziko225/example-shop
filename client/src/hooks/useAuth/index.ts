@@ -10,7 +10,7 @@ export type UserData = {
 
 export const useAuth = () => {
     const [userData, setUserData] = useState<UserData | null>(null);
-    const [isAuth, setIsAuth] = useState(false);
+    const [isAuth, setIsAuth] = useState(true);
 
     useEffect(() => {
         if (!isAuth) {
@@ -21,15 +21,8 @@ export const useAuth = () => {
     useEffect(() => {
         refresh()
             .then(data => {
-                if (!data) {
-                    return;
-                }
-
-                if (data instanceof AxiosError) {
-                    return;
-                }
-
-                if (!data.userData?.isActivated) {
+                if (!data || data instanceof AxiosError || !data.userData?.isActivated) {
+                    setIsAuth(false)
                     return;
                 }
 

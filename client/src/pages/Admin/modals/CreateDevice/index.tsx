@@ -1,6 +1,6 @@
 import { useState } from "react";
-import useDevices from "../../../../hooks/useDevices/useDevices";
-import useSelectId from "../../../../hooks/useSelectId/useSelectId";
+import useDevices from "../../../../hooks/useDevices";
+import useSelectId from "../../../../hooks/useSelectId";
 import { ButtonBlock, StyledButton } from "../../styled";
 import { Description, DescriptionBlock, DescriptionTitle, PriceInput, RemoveButton } from "./styled";
 import {

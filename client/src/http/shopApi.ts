@@ -5,7 +5,7 @@ import { refresh } from "./userApi";
 const authOption = (accessToken?: string | null, reqiuredParams?: AxiosRequestConfig) => {
     const param = {
         headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken || sessionStorage.getItem("token")}`,
         },
         params: reqiuredParams
     };
@@ -19,7 +19,7 @@ type RequestData = {
 } | FormData | null | undefined;
 
 const repeatedRequestIf401error = async (error: AxiosError, name: string, requestData: RequestData, method: string) => {
-    if (error.response?.status === 401 || true) {
+    if (error.response?.status === 401) {
         try {
             const data = await refresh();
 
@@ -56,6 +56,7 @@ const repeatedRequestIf401error = async (error: AxiosError, name: string, reques
 const postRequest = async (path: string, requestData?: RequestData) => {
     try {
         const { data } = await $host.post(path, requestData, authOption(sessionStorage.getItem('token')));
+
         return data;
     } catch (error) {
         if (error instanceof AxiosError) {
@@ -77,7 +78,7 @@ const getRequest = async (path: string, params?: AxiosRequestConfig) => {
         return data;
     } catch (error) {
         if (error instanceof AxiosError) {
-            const response = await repeatedRequestIf401error(error, path, { params }, "GET");
+            const response = await repeatedRequestIf401error(error, path, params, "GET");
 
             if (response instanceof Error) {
                 return new Error(error.response ? error.response.data.message : error.message);
@@ -106,6 +107,8 @@ const deleteRequest = async (path: string) => {
     }
 };
 
+// types _________________________________________
+
 export const createType = async (type: string) => {
     return await postRequest("type", { name: type });
 };
@@ -118,6 +121,8 @@ export const removeType = async (typeId: number) => {
     return await deleteRequest("type/" + typeId);
 };
 
+// brands _________________________________________
+
 export const createBrand = async (brand: string) => {
     return await postRequest("brand", { name: brand });
 };
@@ -129,6 +134,8 @@ export const fetchBrands = async () => {
 export const removeBrand = async (brandId: number) => {
     return await deleteRequest("brand/" + brandId);
 };
+
+// devices _________________________________________
 
 export const createDevice = async (device: FormData) => {
     return await postRequest("device", device);
@@ -150,4 +157,22 @@ export const fetchOneDevice = async (id: number | string) => {
 
 export const removeDevice = async (deviceId: number) => {
     return await deleteRequest("device/" + deviceId);
+};
+
+// cart _________________________________________
+
+export const addDeviceToCart = async (id: number) => {
+    return await postRequest("cart", { id });
+};
+
+export const fetchCart = async () => {
+    return await getRequest('cart', authOption());
+};
+
+export const removeDeviceFromCart = async (id: number) => {
+    return await deleteRequest("cart/" + id);
+};
+
+export const removeAllDevicesFromCart = async () => {
+    return await deleteRequest("cart");
 };

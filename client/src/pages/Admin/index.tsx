@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Pagination from "../../components/Pagination";
-import useDevices from "../../hooks/useDevices/useDevices";
+import useDevices from "../../hooks/useDevices";
 import CreateBrandModal from "./modals/CreateBrand";
 import CreateDeviceModal from "./modals/CreateDevice";
 import CreateTypeModal from "./modals/CreateType";

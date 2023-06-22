@@ -1,10 +1,15 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Container, ContentBlock, DescriptionTitile, Price, Starblock, StyledButon, StyledImg, StyledStar } from "./styled";
 import useGetDevice from "./useGetDevice";
-import { notFoundPath } from "../../routes";
+import { loginPath, notFoundPath } from "../../routes";
+import { ShoppingCartContext } from "../../context/ShoppingCartContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const ItemInfo = () => {
   const { device } = useGetDevice();
+  const cart = useContext(ShoppingCartContext);
+  const auth = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -24,7 +29,9 @@ const ItemInfo = () => {
           <h1>{device.name}</h1>
           <Starblock><StyledStar /> {device.rating} / 5</Starblock>
           <Price>{device.price}$</Price>
-          <StyledButon cart>Add to cart</StyledButon>
+          {auth?.isAuth
+            ? <StyledButon onClick={() => cart?.add(device.id)} cart>Add to cart</StyledButon>
+            : <StyledButon onClick={() => navigate(loginPath)}>Log in to buy this</StyledButon>}
         </ContentBlock>
         <ContentBlock description>
           {device.info.map(({ title, description }) =>

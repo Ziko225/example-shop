@@ -11,6 +11,12 @@ export const StyledNav = styled.nav`
     min-height: 50px;
     gap: 20px;
     box-shadow: ${theme.shadows.medium};
+    @media (max-width: ${theme.breakpoints.mobileMax}) {
+        padding: 0 5px;
+        font-size: 13px;
+        text-align: center;
+        gap: 10px;
+    }
 `;
 
 export const StyledNavLink = styled(NavLink)`
@@ -27,11 +33,31 @@ export const StyledNavLink = styled(NavLink)`
         padding: 5px 7px;
     `}
     &:hover{
-      filter: brightness(150%);
-      text-decoration: underline;
+      filter: brightness(80%);
     }
     &:active{
-      filter: brightness(50%);
-      text-decoration: none;
+      filter: brightness(60%);
+    }
+`;
+
+export const CartCount = styled.span`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: ${theme.colors.componentBackgroundLight};
+    color: ${theme.colors.text};
+    font-weight: 700;
+    border-radius: 50%;
+    min-width: 20px;
+    height: 20px;
+    margin: 0 0 -3px -12px;
+    padding-top: 4px;
+    align-self: flex-end;
+    @media (max-width: ${theme.breakpoints.mobileMax}) {
+        padding: 3px 5px 0;
+        font-size: 13px;
+        text-align: center;
+        min-width: 17px;
+        height: 17px;
     }
 `;

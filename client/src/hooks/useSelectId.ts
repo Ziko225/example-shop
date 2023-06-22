@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 
 const useSelectId = (initialState?: number): [number, (id: number) => void] => {
     const [value, setValue] = useState(initialState || 0);
