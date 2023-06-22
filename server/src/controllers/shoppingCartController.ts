@@ -9,7 +9,7 @@ class BrandController {
 
     async addDevice(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.params;
+            const { id } = req.body;
             if (!id) {
                 return next(ApiError.badRequest("Id required"));
             }
@@ -25,7 +25,7 @@ class BrandController {
                 return next(ApiError.notFound(`Device with id ${id} not found`));
             }
 
-            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
+            const shoppingCart = await ShoppingCart.findOne({ where: userId });
             if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }
@@ -48,12 +48,16 @@ class BrandController {
                 return next(ApiError.Unauthorized());
             }
 
-            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
+            const shoppingCart = await ShoppingCart.findOne({ where: userId });
             if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }
 
-            const devicesInShoppingCart = await ShoppingCartDevice.findAll({ where: { shoppingCartId: shoppingCart.id } });
+            const devicesInShoppingCart = await ShoppingCartDevice.findAll(
+                {
+                    where: { shoppingCartId: shoppingCart.id },
+                    include: [{ model: Device, as: "device" }]
+                });
 
             if (!devicesInShoppingCart[0]) {
                 return next(ApiError.notFound(`Devices not found`));
@@ -80,7 +84,7 @@ class BrandController {
                 return next(ApiError.Unauthorized());
             }
 
-            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
+            const shoppingCart = await ShoppingCart.findOne({ where: userId });
             if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }
@@ -91,7 +95,7 @@ class BrandController {
                 return next(ApiError.badRequest(`Device with id ${id} not found in shoppingCart`));
             }
 
-            return res.json({ message: `Device with id ${id} removed successfully` });
+            return res.json({ message: `Device removed successfully` });
 
         } catch (error) {
             if (error instanceof Error) {
@@ -107,7 +111,7 @@ class BrandController {
                 return next(ApiError.Unauthorized());
             }
 
-            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
+            const shoppingCart = await ShoppingCart.findOne({ where: userId });
             if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }
@@ -115,7 +119,7 @@ class BrandController {
             const result = await ShoppingCartDevice.destroy({ where: { shoppingCartId: shoppingCart.id } });
 
             if (!result) {
-                return next(ApiError.badRequest("Devices in shoppingCart not found"));
+                return next(ApiError.badRequest("Device not found"));
             }
 
             return res.json({ message: "Devices successfully removed from shoppingCart" });

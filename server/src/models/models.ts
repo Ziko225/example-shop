@@ -125,7 +125,7 @@ ShoppingCart.belongsTo(User);
 User.hasMany(Rating);
 Rating.belongsTo(User);
 
-ShoppingCart.hasMany(ShoppingCartDevice);
+ShoppingCart.hasMany(ShoppingCartDevice, { as: "device" });
 ShoppingCartDevice.belongsTo(ShoppingCart);
 
 Type.hasMany(Device);

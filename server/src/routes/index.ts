@@ -9,7 +9,7 @@ import authMiddleware from "../middleware/authMiddleware.js";
 const router = Router();
 
 router.use("/user", userRouter);
-router.use("/shoppingCart", authMiddleware, shoppingCartRouter);
+router.use("/cart", authMiddleware, shoppingCartRouter);
 router.use("/type", typeRouter);
 router.use("/brand", brandRouter);
 router.use("/device", deviceRouter);
