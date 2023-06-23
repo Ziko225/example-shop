@@ -12,7 +12,7 @@ export const StyledNav = styled.nav`
     gap: 20px;
     box-shadow: ${theme.shadows.medium};
     @media (max-width: ${theme.breakpoints.mobileMax}) {
-        padding: 0 5px;
+        padding: 0 10px;
         font-size: 13px;
         text-align: center;
         gap: 10px;

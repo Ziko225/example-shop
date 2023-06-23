@@ -80,7 +80,7 @@ const Admin = () => {
         <ItemsList>
           {devices ? devices.rows.map((device) =>
             <Item key={device.id}>
-              <StyledImg width="80px" src={`${url}/${device.img}`} />
+              <StyledImg height="100px" src={`${url}/${device.img}`} />
               {device.name}
               <RemoveButton onClick={() => remove(device.id, "device")}>Remove</RemoveButton>
             </Item>

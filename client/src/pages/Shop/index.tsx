@@ -53,6 +53,7 @@ const Shop = () => {
         )}
       </FilterBlockTypes>
       <ItemsBlock>
+        {!devices?.rows[0] && <h2>No devices found</h2>}
         {devices
           ? devices.rows.map((device) =>
             <ItemCard key={device.id} data={device} />

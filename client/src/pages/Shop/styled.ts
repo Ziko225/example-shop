@@ -40,7 +40,7 @@ export const ItemsBlock = styled.ul`
     width: 100%;
     display: grid;
     justify-content: center;
-    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
     gap: 20px;
     @media (max-width: ${theme.breakpoints.mobileMax}) {
         flex-wrap: wrap;

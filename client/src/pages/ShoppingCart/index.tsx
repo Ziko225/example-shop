@@ -34,7 +34,7 @@ const ShoppingCart = () => {
             </ContentBlock>
           </Card>
         )
-        : <h2>Shopping car is empty</h2>}
+        : <h2>Shopping cart is empty</h2>}
       {cart?.cartData[0] &&
         <>
           <Price>In total: {getPrice()}$</Price>

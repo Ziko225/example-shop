@@ -53,11 +53,11 @@ export const Item = styled.div`
     padding: 10px;
     box-shadow: ${theme.shadows.light};
     min-width: 150px;
-
 `;
 
 export const StyledImg = styled.img`
     object-fit: contain;
+    height: 100px;
 `;
 
 export const TitleItems = styled.h2`
