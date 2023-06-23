@@ -66,7 +66,9 @@ class DeviceController {
         try {
             const { brandId, typeId, page } = req.query;
 
-            const limit = 20;
+            const selectedLimit = process.env.MAX_DEVICES_IN_PAGE;
+            const limit = selectedLimit ? +selectedLimit : 20;
+
             let devices;
 
             if (!page || typeof (page) !== "string") {

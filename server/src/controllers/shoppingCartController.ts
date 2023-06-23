@@ -25,7 +25,7 @@ class BrandController {
                 return next(ApiError.notFound(`Device with id ${id} not found`));
             }
 
-            const shoppingCart = await ShoppingCart.findOne({ where: userId });
+            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
             if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }
@@ -48,7 +48,7 @@ class BrandController {
                 return next(ApiError.Unauthorized());
             }
 
-            const shoppingCart = await ShoppingCart.findOne({ where: userId });
+            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
             if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }
@@ -84,7 +84,7 @@ class BrandController {
                 return next(ApiError.Unauthorized());
             }
 
-            const shoppingCart = await ShoppingCart.findOne({ where: userId });
+            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
             if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }
@@ -111,7 +111,7 @@ class BrandController {
                 return next(ApiError.Unauthorized());
             }
 
-            const shoppingCart = await ShoppingCart.findOne({ where: userId });
+            const shoppingCart = await ShoppingCart.findOne({ where: { userId } });
             if (!shoppingCart) {
                 return next(ApiError.Unauthorized());
             }

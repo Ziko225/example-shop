@@ -41,7 +41,7 @@ const sendActivationMail = async (to: string, activationCode: string) => {
         });
 
         if (a?.accepted) {
-            console.log("====================== email accepted ======================");
+            console.log("====================== Activation was sent to email ======================");
             console.log(a?.accepted);
             return ({ status: true });
         } else return ({
